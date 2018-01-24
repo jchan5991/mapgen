@@ -1,9 +1,5 @@
 var axios = require('axios')
 
-
-
-
-
 var CentroidGen= function(minNumOfCentroid, randVariable, q, r) {
 
   let min= 2; let centreVariable= 5;
@@ -54,24 +50,57 @@ var MapGen= function(centroidData, data) {
 
     let chosen= Math.min(...Object.keys(tile_distance).map(Number));
 
-    if (tile_distance[chosen]=='dirt')
+    if (tile_distance[chosen]=='dirt') {
       data[id].cell['t']= 0;
-    else if (tile_distance[chosen]=='grass')
+
+      let oilCtrlVar=20;
+      if (Math.random()*oilCtrlVar < 1)
+        data[id].resources.push('Oil');
+
+    } else if (tile_distance[chosen]=='grass') {
+
       data[id].cell['t']=1;
-    else if (tile_distance[chosen]=='mars')
+
+      let woodCtrlVar=20;
+      let livestockCtrlVar= 20;
+
+      if (Math.random()*woodCtrlVar < 1)
+        data[id].resources.push('Wood');
+      else if (Math.random()*livestockCtrlVar < 1)
+        data[id].resources.push('Livestock');
+
+    } else if (tile_distance[chosen]=='mars')
       data[id].cell['t']=2;
     else if (tile_distance[chosen]=='sand')
       data[id].cell['t']=3;
-    else if (tile_distance[chosen]=='stone')
+    else if (tile_distance[chosen]=='stone') {
       data[id].cell['t']=4;
-    else
+
+      let ironCtrlVar=20;
+      let coalCtrlVar=20;
+
+      if (Math.random()*ironCtrlVar < 1)
+        data[id].resources.push('Iron Ore');
+      else if (Math.random()*coalCtrlVar < 1)
+        data[id].resources.push('Coal');
+
+    } else
       console.log('Error with algor');
 
       /*
-      dirt- normal/ tree
-      grass- normal/ tree
-      sand- normal/ rock
-      stone- normal/ rock
+      t: 1,2,3 - Dirt normal
+      t: 4,5,6 - Dirt with Trees
+
+      t: 7,8,9 - Grass normal
+      t: 10,11,12 - Grass with Trees
+
+      t: 13,14,15 - Sand normal
+      t: 16,17,18 - Sand with Rocks
+
+      t: 19,20,21 - Stone normal
+      t: 22,23,24 - Stone with rock
+
+
       */
 
 
@@ -84,25 +113,23 @@ axios.get('http://localhost:8080/query/plots').then(
 
         if (data!=null) {
           var qarr= [];
-          var q_obj;
           var rarr= [];
-          var r_obj;
+
 
           for (let id in data) {
-//            console.log("Id: " + id)
-//            console.log("Data: " + data)
-
-  //          data[id].cell['t']=0;
             qarr.push(data[id].cell['q']);
             rarr.push(data[id].cell['r']);
           }
 
-          q_obj= {'min': Math.min(...qarr), 'max': Math.max(...qarr)};
-          r_obj= {'min': Math.min(...rarr), 'max': Math.max(...rarr)};
+          let q_obj= {'min': Math.min(...qarr), 'max': Math.max(...qarr)};
+          let r_obj= {'min': Math.min(...rarr), 'max': Math.max(...rarr)};
 
-          //console.log(CentroidGen(2,5,q_obj,r_obj))
 
-                    MapGen(CentroidGen(2,5,q_obj,r_obj), data)
+          let minNumOfCentroid= 2;
+          let randVariable= 5;
+
+          MapGen(CentroidGen(minNumOfCentroid,randVariable,q_obj,r_obj), data);
+
           var data2= []
           for (let id in data) {
             var e = {
@@ -111,43 +138,12 @@ axios.get('http://localhost:8080/query/plots').then(
                                   'r': data[id].cell['r']
                             },
                             'terrain':data[id].cell['t'],
-                            'resources': []
+                            'resources': data[id].resources
                       }
 
-                      data2.push(e)
-
-            //console.log("Data: " + JSON.stringify(data[id].cell))
-            //data2[id].cell['q']= data[id].cell['q']
-            //console.log("q: " + data2[id].cell['q'])
-            //data2[id].cell.q= data[id].cell['q']
-            //data2[id].cell.r= data[id].cell['r']
-            //data2[id].cell.t= data[id].cell['t']
+            data2.push(e)
           }
 
-                      console.log(data2)
-
-
-
-
-/*          var data2= data.map(plot => {
-            var plot = {
-              q: plot.cell.q,
-              r: plot.cell.r,
-              t: plot.cell.t
-            }
-          })
-*/
-
-
-//          console.log(JSON.stringify(data2));
-  //        console.log(q_obj);
-  //        console.log(r_obj);
-        }
-
-
-}
-
-).catch(ex => console.log(ex));
-
-//getJSON('http://localhost:8080/query/plots',
-//);
+          console.log(data2);
+    }
+}).catch(ex => console.log(ex));
