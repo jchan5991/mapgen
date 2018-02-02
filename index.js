@@ -53,9 +53,6 @@ var MapGen= function(centroidData, data) {
     if (tile_distance[chosen]=='dirt') {
       data[id].cell['t']= 0;
 
-      let oilCtrlVar=20;
-      if (Math.random()*oilCtrlVar < 1)
-        data[id].resources.push('Oil');
 
     } else if (tile_distance[chosen]=='grass') {
 
@@ -64,25 +61,36 @@ var MapGen= function(centroidData, data) {
       let woodCtrlVar=20;
       let livestockCtrlVar= 20;
 
-      if (Math.random()*woodCtrlVar < 1)
-        data[id].resources.push('Wood');
-      else if (Math.random()*livestockCtrlVar < 1)
-        data[id].resources.push('Livestock');
+        if (Math.random()*woodCtrlVar < 1)
+          data[id].resources.push('Wood');
+        else if (Math.random()*livestockCtrlVar < 1)
+          data[id].resources.push('Livestock');
+        else {
+          data[id].resources.push('Fruits');
+        }
 
-    } else if (tile_distance[chosen]=='mars')
+    } else if (tile_distance[chosen]=='mars') {
       data[id].cell['t']=2;
-    else if (tile_distance[chosen]=='sand')
+    } else if (tile_distance[chosen]=='sand') {
       data[id].cell['t']=3;
-    else if (tile_distance[chosen]=='stone') {
+
+      let oilCtrlVar=20;
+        if (Math.random()*oilCtrlVar < 1)
+          data[id].resources.push('Oil');
+
+    } else if (tile_distance[chosen]=='stone') {
       data[id].cell['t']=4;
 
       let ironCtrlVar=20;
       let coalCtrlVar=20;
 
-      if (Math.random()*ironCtrlVar < 1)
-        data[id].resources.push('Iron Ore');
-      else if (Math.random()*coalCtrlVar < 1)
-        data[id].resources.push('Coal');
+        if (Math.random()*ironCtrlVar < 1)
+          data[id].resources.push('Iron Ore');
+        else if (Math.random()*coalCtrlVar < 1)
+          data[id].resources.push('Coal');
+        else {
+          data[id].resources.push('Ore')
+        }
 
     } else
       console.log('Error with algor');
