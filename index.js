@@ -141,17 +141,18 @@ axios.get('http://localhost:8080/query/plots').then(
           var data2= []
           for (let id in data) {
             var e = {
+                        'terrain':data[id].cell['t'],
+                        'resources': data[id].resources,
                         'cell': {
-                                'q': data[id].cell['q'],
+                                  'q': data[id].cell['q'],
                                   'r': data[id].cell['r']
-                            },
-                            'terrain':data[id].cell['t'],
-                            'resources': data[id].resources
+                                }
+
                       }
 
             data2.push(e)
           }
 
-          console.log(data2);
+          console.log(JSON.stringify(data2));
     }
 }).catch(ex => console.log(ex));
