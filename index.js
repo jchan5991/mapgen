@@ -66,7 +66,7 @@ var MapGen= function(centroidData, data) {
         else if (Math.random()*livestockCtrlVar < 1)
           data[id].resources.push('Livestock');
         else {
-          data[id].resources.push('Fruits');
+          //data[id].resources.push('Fruits');
         }
 
     } else if (tile_distance[chosen]=='mars') {
@@ -89,7 +89,7 @@ var MapGen= function(centroidData, data) {
         else if (Math.random()*coalCtrlVar < 1)
           data[id].resources.push('Coal');
         else {
-          data[id].resources.push('Ore')
+          //data[id].resources.push('Ore')
         }
 
     } else
