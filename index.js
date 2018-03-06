@@ -15,9 +15,19 @@ var CentroidGen= function(minNumOfCentroid, randVariable, q, r) {
 
   for(let i=1; i<= numOfCentroids; i++)
   {
-      let tmp= Regions[Math.floor(Math.random()*Regions.length)];
-      centroids.push(tmp);
-      //Regions.splice(Regions.indexOf(tmp),1);
+      let tmp= Math.random()*4
+
+      if (tmp < 2)
+        centroids.push('Forest')
+      else if (tmp < 3)
+        centroids.push('Desert')
+      else
+        centroids.push('Mountain')
+      
+
+      //let tmp= Regions[Math.floor(Math.random()*Regions.length)];
+      //centroids.push(tmp);
+
   }
 
   let centroids_coord= {};
@@ -50,14 +60,16 @@ var MapGen= function(centroidData, data, mapsize) {
           //tile_distance[centre]= x+y/2;
         }
 
+        data[id].resources=[];
+
         let chosen= Math.min(...Object.keys(tile_distance).map(Number));
 
         if (tile_distance[chosen]=='Forest')
         {
           data[id].cell['t']= 'Forest';
 
-          let woodCtrlVar=20;
-          let livestockCtrlVar= 20;
+          let woodCtrlVar=5;
+          let livestockCtrlVar= 7;
 
           if (Math.random()*woodCtrlVar < 1)
             data[id].resources.push('Wood');
@@ -68,8 +80,8 @@ var MapGen= function(centroidData, data, mapsize) {
         {
           data[id].cell['t']='Mountain';
 
-          let ironCtrlVar=20;
-          let coalCtrlVar=20;
+          let ironCtrlVar=6;
+          let coalCtrlVar=6;
 
           if (Math.random()*ironCtrlVar < 1)
             data[id].resources.push('IronOre');
@@ -79,7 +91,7 @@ var MapGen= function(centroidData, data, mapsize) {
         {
           data[id].cell['t']='Desert';
 
-          let oilCtrlVar=20;
+          let oilCtrlVar=8;
             if (Math.random()*oilCtrlVar < 1)
               data[id].resources.push('Oil');
         } else
