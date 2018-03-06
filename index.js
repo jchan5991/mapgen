@@ -40,50 +40,51 @@ var MapGen= function(centroidData, data, mapsize) {
 
   for(let id in data)
   {
-    let tile_distance= {};
-    for (let centroid of centroids)
-    {
-       let q= Math.abs(data[id].cell['q']-centroids_coord[centroid].q);
-       let r= Math.abs(data[id].cell['r']-centroids_coord[centroid].r);
+        let tile_distance= {};
+        for (let centroid of centroids)
+        {
+           let q= Math.abs(data[id].cell['q']-centroids_coord[centroid].q);
+           let r= Math.abs(data[id].cell['r']-centroids_coord[centroid].r);
 
-      tile_distance[q+r/2]= centroid;
-      //tile_distance[centre]= x+y/2;
+          tile_distance[q+r/2]= centroid;
+          //tile_distance[centre]= x+y/2;
+        }
+
+        let chosen= Math.min(...Object.keys(tile_distance).map(Number));
+
+        if (tile_distance[chosen]=='Forest')
+        {
+          data[id].cell['t']= 'Forest';
+
+          let woodCtrlVar=20;
+          let livestockCtrlVar= 20;
+
+          if (Math.random()*woodCtrlVar < 1)
+            data[id].resources.push('Wood');
+          else if (Math.random()*livestockCtrlVar < 1)
+            data[id].resources.push('Livestock');
+
+        } else if (tile_distance[chosen]=='Mountain')
+        {
+          data[id].cell['t']='Mountain';
+
+          let ironCtrlVar=20;
+          let coalCtrlVar=20;
+
+          if (Math.random()*ironCtrlVar < 1)
+            data[id].resources.push('IronOre');
+          else if (Math.random()*coalCtrlVar < 1)
+            data[id].resources.push('Coal');
+        } else if (tile_distance[chosen]=='Desert')
+        {
+          data[id].cell['t']='Desert';
+
+          let oilCtrlVar=20;
+            if (Math.random()*oilCtrlVar < 1)
+              data[id].resources.push('Oil');
+        } else
+          console.log('Error in MapGen')
     }
-
-    let chosen= Math.min(...Object.keys(tile_distance).map(Number));
-
-    if (tile_distance[chosen]=='Forest')
-    {
-      data[id].cell['t']= 'Forest';
-
-      let woodCtrlVar=20;
-      let livestockCtrlVar= 20;
-
-      if (Math.random()*woodCtrlVar < 1)
-        data[id].resources.push('Wood');
-      else if (Math.random()*livestockCtrlVar < 1)
-        data[id].resources.push('Livestock');
-
-    } else if (tile_distance[chosen]=='Mountain')
-    {
-      data[id].cell['t']='Mountain';
-
-      let ironCtrlVar=20;
-      let coalCtrlVar=20;
-
-      if (Math.random()*ironCtrlVar < 1)
-        data[id].resources.push('IronOre');
-      else if (Math.random()*coalCtrlVar < 1)
-        data[id].resources.push('Coal');
-    } else if (tile_distance[chosen]=='Desert')
-    {
-      data[id].cell['t']='Desert';
-
-      let oilCtrlVar=20;
-        if (Math.random()*oilCtrlVar < 1)
-          data[id].resources.push('Oil');
-    } else
-      console.log('Error in MapGen')
 
 /*
     if (tile_distance[chosen]=='Forest')
@@ -198,7 +199,7 @@ axios.get('http://localhost:8080/query/plots').then(
 
             data2.push(e)
           }
-          //console.log(data2)
-          console.log(JSON.stringify(data2, null, 4));
+          console.log(data2)
+          //console.log(JSON.stringify(data2, null, 4));
     }
 }).catch(ex => console.log(ex));
