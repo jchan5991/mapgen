@@ -2,14 +2,16 @@ var axios = require('axios')
 
 var CentroidGen= function(minNumOfCentroid, randVariable, q, r) {
 
-  let min= 2; let centreVariable= 5;
-  let xmax= 4; let ymax= 6;
+//  let min= 2; let centreVariable= 5;
+//  let xmax= 4; let ymax= 6;
 
 
   let numOfCentroids= Math.floor(Math.random()*randVariable+minNumOfCentroid);
   let centroids= [];
 
-  let Regions= ['dirt', 'grass', 'mars', 'sand', 'stone'];
+//  let Regions= ['dirt', 'grass', 'mars', 'sand', 'stone'];
+
+  let Regions= ['Forest', 'Desert', 'Mountain']
 
   for(let i=1; i<= numOfCentroids; i++)
   {
@@ -32,7 +34,7 @@ var CentroidGen= function(minNumOfCentroid, randVariable, q, r) {
 
 
 
-var MapGen= function(centroidData, data) {
+var MapGen= function(centroidData, data, mapsize) {
   var centroids= centroidData[0];
   var centroids_coord= centroidData[1];
 
@@ -50,11 +52,49 @@ var MapGen= function(centroidData, data) {
 
     let chosen= Math.min(...Object.keys(tile_distance).map(Number));
 
-    if (tile_distance[chosen]=='dirt') {
-      data[id].cell['t']= 0;
+    if (tile_distance[chosen]=='Forest')
+    {
+      data[id].cell['t']= 'Forest';
 
+      let woodCtrlVar=20;
+      let livestockCtrlVar= 20;
 
-    } else if (tile_distance[chosen]=='grass') {
+      if (Math.random()*woodCtrlVar < 1)
+        data[id].resources.push('Wood');
+      else if (Math.random()*livestockCtrlVar < 1)
+        data[id].resources.push('Livestock');
+
+    } else if (tile_distance[chosen]=='Mountain')
+    {
+      data[id].cell['t']='Mountain';
+
+      let ironCtrlVar=20;
+      let coalCtrlVar=20;
+
+      if (Math.random()*ironCtrlVar < 1)
+        data[id].resources.push('IronOre');
+      else if (Math.random()*coalCtrlVar < 1)
+        data[id].resources.push('Coal');
+    } else if (tile_distance[chosen]=='Desert')
+    {
+      data[id].cell['t']='Desert';
+
+      let oilCtrlVar=20;
+        if (Math.random()*oilCtrlVar < 1)
+          data[id].resources.push('Oil');
+    } else
+      console.log('Error in MapGen')
+
+/*
+    if (tile_distance[chosen]=='Forest')
+    {
+      data[id].cell['t']= 'Forest';
+      //dirt plain
+      // dirt tree
+      // dirt rock
+
+    } else if (tile_distance[chosen]=='Forest')
+    {
 
       data[id].cell['t']=1;
 
@@ -65,54 +105,57 @@ var MapGen= function(centroidData, data) {
           data[id].resources.push('Wood');
         else if (Math.random()*livestockCtrlVar < 1)
           data[id].resources.push('Livestock');
-        else {
+        else
+        {
           //data[id].resources.push('Fruits');
         }
 
-    } else if (tile_distance[chosen]=='mars') {
+        // grass plain
+        // grass tree
+        // grass Wood
+        // grass rock
+        // grass Livestock
+
+    }
+   else if (tile_distance[chosen]=='mars')
+    {
       data[id].cell['t']=2;
-    } else if (tile_distance[chosen]=='sand') {
-      data[id].cell['t']=3;
+    }
+    else if (tile_distance[chosen]=='sand')
+    {
+      data[id].cell['t']=2;
 
       let oilCtrlVar=20;
         if (Math.random()*oilCtrlVar < 1)
           data[id].resources.push('Oil');
 
-    } else if (tile_distance[chosen]=='stone') {
-      data[id].cell['t']=4;
+      // sand rock
+      // sand plain
+      // sand tree
+      // sand Oil
+
+    }
+    else if (tile_distance[chosen]=='stone')
+    {
+      data[id].cell['t']=3;
 
       let ironCtrlVar=20;
       let coalCtrlVar=20;
 
         if (Math.random()*ironCtrlVar < 1)
-          data[id].resources.push('Iron Ore');
+          data[id].resources.push('IronOre');
         else if (Math.random()*coalCtrlVar < 1)
           data[id].resources.push('Coal');
         else {
           //data[id].resources.push('Ore')
         }
 
-    } else
+    }
+    else
       console.log('Error with algor');
 
-      /*
-      t: 1,2,3 - Dirt normal
-      t: 4,5,6 - Dirt with Trees
-
-      t: 7,8,9 - Grass normal
-      t: 10,11,12 - Grass with Trees
-
-      t: 13,14,15 - Sand normal
-      t: 16,17,18 - Sand with Rocks
-
-      t: 19,20,21 - Stone normal
-      t: 22,23,24 - Stone with rock
-
-
-      */
-
-
     }
+    */
 }
 
 axios.get('http://localhost:8080/query/plots').then(
@@ -122,12 +165,15 @@ axios.get('http://localhost:8080/query/plots').then(
         if (data!=null) {
           var qarr= [];
           var rarr= [];
-
+//          var size=0;
 
           for (let id in data) {
             qarr.push(data[id].cell['q']);
             rarr.push(data[id].cell['r']);
+//            size += 1;
           }
+
+//            console.log('Size of Map: '+size);
 
           let q_obj= {'min': Math.min(...qarr), 'max': Math.max(...qarr)};
           let r_obj= {'min': Math.min(...rarr), 'max': Math.max(...rarr)};
@@ -152,7 +198,7 @@ axios.get('http://localhost:8080/query/plots').then(
 
             data2.push(e)
           }
-
-          console.log(JSON.stringify(data2));
+          //console.log(data2)
+          console.log(JSON.stringify(data2, null, 4));
     }
 }).catch(ex => console.log(ex));
